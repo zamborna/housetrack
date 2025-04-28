@@ -6,7 +6,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen p-6">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-5xl mx-auto">
         <h1 class="text-3xl font-bold mb-6 text-center">🏡 House Finder</h1>
 
         <!-- Search Form -->
@@ -22,20 +22,24 @@
     </div>
 
     <script>
-        // Dummy houses (normally from web scraping or API)
-        const allHouses = [
-            { id: 1, title: "Cozy Apartment in Vienna", price: 300000, location: "Vienna", size: 80 },
-            { id: 2, title: "Luxury Villa in Graz", price: 750000, location: "Graz", size: 200 },
-            { id: 3, title: "Modern Flat in Linz", price: 450000, location: "Linz", size: 100 },
-            { id: 4, title: "Charming House in Salzburg", price: 550000, location: "Salzburg", size: 150 }
-        ];
+        let allHouses = [];
 
-        function searchHouses() {
+        // Load houses from houses.json
+        async function loadHouses() {
+            const response = await fetch('houses.json');
+            allHouses = await response.json();
+        }
+
+        async function searchHouses() {
+            if (allHouses.length === 0) {
+                await loadHouses();
+            }
+
             const location = document.getElementById('location').value.toLowerCase();
             const minPrice = parseInt(document.getElementById('minPrice').value) || 0;
             const maxPrice = parseInt(document.getElementById('maxPrice').value) || Infinity;
 
-            // Filter houses based on search
+            // Filter houses
             const filtered = allHouses.filter(house => 
                 house.location.toLowerCase().includes(location) &&
                 house.price >= minPrice &&
@@ -45,7 +49,6 @@
             // Load stored houses
             const storedHouses = JSON.parse(localStorage.getItem('storedHouses') || '[]');
 
-            // Prepare results
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '';
 
@@ -58,11 +61,15 @@
                 }`;
 
                 card.innerHTML = `
-                    <div>
-                        <h2 class="text-xl font-bold">${house.title}</h2>
-                        <p>Location: ${house.location}</p>
-                        <p>Price: €${house.price.toLocaleString()}</p>
-                        <p>Size: ${house.size} m²</p>
+                    <div class="flex items-center gap-4">
+                        <img src="${house.image}" alt="${house.title}" class="w-32 h-24 object-cover rounded">
+                        <div>
+                            <h2 class="text-xl font-bold">${house.title}</h2>
+                            <p>Location: ${house.location}</p>
+                            <p>Price: €${house.price.toLocaleString()}</p>
+                            <p>Size: ${house.size} m²</p>
+                            <a href="${house.url}" target="_blank" class="text-blue-600 underline">View Listing</a>
+                        </div>
                     </div>
                     <div class="text-right">
                         <span class="px-2 py-1 rounded ${
@@ -84,6 +91,9 @@
             // Update localStorage
             localStorage.setItem('storedHouses', JSON.stringify(storedHouses));
         }
+
+        // Load data when page opens
+        loadHouses();
     </script>
 </body>
 </html>
