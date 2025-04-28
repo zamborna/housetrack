@@ -1,0 +1,20 @@
+[
+    {
+        "id": "w12345",
+        "title": "Modern Apartment in Vienna",
+        "price": 320000,
+        "location": "Vienna",
+        "size": 75,
+        "url": "https://willhaben.at/anzeige1",
+        "image": "https://example.com/image1.jpg"
+    },
+    {
+        "id": "s67890",
+        "title": "Family House in Graz",
+        "price": 450000,
+        "location": "Graz",
+        "size": 140,
+        "url": "https://immobilienscout24.at/anzeige2",
+        "image": "https://example.com/image2.jpg"
+    }
+]
